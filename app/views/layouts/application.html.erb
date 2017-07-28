@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head any other head content must come *after* these tags -->
+  <title>Sightful</title>
+  <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.css" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <%= csrf_meta_tags %>
+
+  <!-- Bootstrap from Yen -->
+  <link href="/css/form.css" rel="stylesheet">
+  <script src="/js/sinch.min.js"></script>
+
+  <link rel="stylesheet" href="/css/app.css"/>
+</head>
+
+<body onbeforeunload="return emptySinch()" ng-app="sightfull">
+<toaster-container></toaster-container>
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"><img src="images/logo.png" class="center-block img-responsive  "></a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/mentors" class="">Explore</a></li>
+        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSenyw6QbxL7MEucM6-yW7jTPqVktSh8_eSYLYj7zz8AqU5fUA/viewform?embedded=true" target="_blank" class="">Advise</a></li>
+        <% if user_signed_in? %>
+            <li>
+              <input type="hidden" class="user_email" value="<%= current_user.email %>">
+            </li>
+            <li class="dropdown rightdrop2"><a href="#" data-toggle="dropdown" class="dropdown-toggle">
+
+              <% if current_user.dp%>
+                  <img src="<%= current_user.dp %>" width="40" class="img-responsive profile-img" alt="img">
+              <% else %>
+                  <img src="images/person-placeholder.jpg" width="40" class="img-responsive profile-img" alt="img">
+              <% end %>
+
+            </a>
+              <ul class="dropdown-menu">
+                <li><%= link_to "Profile", profile_path %></li>
+                <% if current_user.mentor%>
+                  <li><%= link_to "Invites", invites_path %></li>
+                <% else %>
+                  <li><%= link_to "Requests", requests_path %></li>
+                <% end %>
+                <li><%= link_to "Sign Out", logout_path %></li>
+              </ul>
+            </li>
+        <% else %>
+            <li><a href="#" data-toggle="modal" data-target="#myModal11" data-dismiss="modal">Sign In</a></li>
+            <li><a href="#" class="btn btn-white btn_signup" data-toggle="modal" data-target="#myModal111" data-dismiss="modal">Sign Up</a></li>
+        <% end %>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="modal fade set-up-modal" id="myModal11" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <div class="pop-up bg-none">
+
+            <%= form_tag '/login', class:'login-form existing-user', name: "loginForm", novalidate: true do %>
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control login_email" id="email" placeholder="Email address" ng-model="email_login" ng-required="true">
+                  <!--<span class="help-block">-->
+                  <!--<span ng-show="loginForm.email.$error.required">Required</span>-->
+                  <!--<span ng-show="loginForm.email.$error.rcMailgunEmailValid"> Invalid Email Address</span>-->
+                  <!--<span ng-show="loginForm.email.$error.rcMailgunInProgress"> Validating Email Address</span>-->
+                  <!--<span ng-show="rcMailgun.mailgunStatus"> Validation Error: {{ rcMailgun.mailgunStatus }}</span>-->
+                  <!--</span>-->
+                </div>
+                <div class="form-group">
+                  <input type="password" class="form-control login_pw" required="true" name="password" id="pswd" placeholder="Password" ng-model="password_login" ng-required="true">
+                </div>
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <div class="checkbox">
+                      <label><input type="checkbox" value="">Remember me</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <div class="text-right">
+                      <a href="#" class="text-sky">Forgot password ?</a>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <input type="submit" value="Log In" class="btn btn-login" ng-disabled="loginForm.$invalid">
+                </div>
+                <img src="images/or.png" class="img-responsive center-block space15" alt="..">
+                <div class="space15"></div>
+                <div>
+                  <a href="/auth/linkedin" class="btn btn-linkdin"><i class="fa fa-linkedin space2" aria-hidden="true"></i> &nbsp; &nbsp; &nbsp; Log in with Linkdin</a>
+                </div>
+                <div class="space15"></div>
+                <div>
+                  <a href="#" class="btn btn-fb"><i class="fa fa-facebook space2" aria-hidden="true"></i> &nbsp; &nbsp; Log in with Facebook</a>
+                </div>
+                <div class="space15"></div>
+                <div>
+                  <a href="/auth/google_oauth2" class="btn btn-google"><i class="fa fa-google space2" aria-hidden="true"></i> &nbsp; &nbsp; &nbsp; Log in with google</a>
+                </div>
+                <div class="space15"></div>
+                <div class="bd-line">
+
+                </div>
+                <p class="space15 text-left">Don't have an account? <span><a href="#" class="text-sky f800" data-toggle="modal" data-target="#myModal111" data-dismiss="modal">Sign up</a></span></p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade set-up-modal" id="myModal111" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <div class="pop-up bg-none">
+            <%= form_tag '/signUp', class:'login-form signup-form', name: "signupForm", novalidate: true do %>
+                <div class="form-group">
+                  <input type="text" name="firstName" class="form-control" id="fnm" placeholder="First name" ng-model="firstName" ng-required="true">
+                </div>
+                <div class="form-group">
+                  <input type="text" name="lastName" class="form-control" id="lnm" placeholder="Last name" ng-model="lastName" ng-required="true">
+                </div>
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control" id="email_signup" placeholder="Email address" ng-model="email_signup" ng-required="true" rc-mailgun-valid>
+                  <span class="help-block">
+                     <span ng-show="signupForm.email.$error.required">Required</span>
+                     <span ng-show="signupForm.email.$error.rcMailgunEmailValid"> Invalid Email Address</span>
+                     <span ng-show="signupForm.email.$error.rcMailgunInProgress"> Validating Email Address</span>
+                     <span ng-show="rcMailgun.mailgunStatus"> Validation Error: {{ rcMailgun.mailgunStatus }}</span>
+                   </span>
+                </div>
+                <div class="form-group">
+                  <input type="password" name="password" class="form-control sign_up_pw" id="pswd" placeholder="Password" ng-model="password_signup" ng-required="true">
+                </div>
+                <p class="text-left">Your password must contains at least 8 characters, one capital letter and one numbers.</p>
+                <hr>
+                <div class="form-group">
+                  <div class="radio">
+                    <label><input type="radio" class="userType" name="userType" value="1" checked>I am looking for a mentor.</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" class="userType" name="userType" value="2">I am a mentor.</label>
+                  </div>
+                </div>
+                <div>
+                  <input type="submit" class="btn btn-login btn-signup" value="Sign up" ng-disabled="signupForm.$invalid">
+                </div>
+                <div class="space15"></div>
+                <div>
+                  <a href="/auth/linkedin" class="btn btn-linkdin"><i class="fa fa-linkedin space2" aria-hidden="true"></i> &nbsp; &nbsp; &nbsp; Sign up with Linkdin</a>
+                </div>
+                <div class="space15"></div>
+                <p class="space15 text-left">By signing up,I agree to In-sight's <span><a href="#" class="text-sky f800">Terms of services </a>  and <a href="#" class="text-sky f800"> Privacy Policy </a></span></p>
+                <img src="images/or.png" class="img-responsive center-block space15" alt="..">
+                <div class="space15"></div>
+                <div>
+                  <a href="#" class="btn btn-fb"><i class="fa fa-facebook space2" aria-hidden="true"></i> &nbsp; &nbsp; Sign up with Facebook</a>
+                </div>
+                <div class="space15"></div>
+                <div>
+                  <a href="/auth/google_oauth2" class="btn btn-google"><i class="fa fa-google space2" aria-hidden="true"></i> &nbsp; &nbsp; &nbsp; Sign up with google</a>
+                </div>
+                <div class="space15"></div>
+                <div class="bd-line">
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% flash.each do |name, msg| %>
+    <div class="alert alert-<%= name %>">
+      <%= msg %>
+    </div>
+<% end %>
+
+<%= yield %>
+
+</body>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p class="fsize16">COPYRIGHT © SIGHTFUL 2017</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- Incoming Call Modal -->
+<div id="incomingModal" class="modal fade incoming_call" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Incoming Call</h4>
+      </div>
+      <div class="modal-body">
+
+				<button id="answer" class="btn-sinch">Answer</button>
+        <button id="hangup" class="btn-sinch">Hangup</button>
+
+				<audio id="incoming" autoplay></audio>
+				<audio id="ringtone" src='/audio/phone_ring.wav' loop></audio>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</html>
+<script>
+  function emptySinch(){
+
+    sinchClient = new SinchClient({
+      applicationKey: 'c0711ac1-ae9e-43a9-bc6b-194f0d63238b',
+      capabilities: {calling: true},
+      startActiveConnection: true, /* NOTE: This is required if application is to receive calls / instant messages. */
+      //Note: For additional loging, please uncomment the three rows below
+      onLogMessage: function(message) {
+        console.log(message);
+      },
+    });
+
+    var sessionName = 'sinchSessionWEB-' + $('.user_email').val() + sinchClient.applicationKey;
+    //var sessionName = 'sinchSessionWEB-c0711ac1-ae9e-43a9-bc6b-194f0d63238b';
+    //Stop the sinchClient
+    sinchClient.terminate();
+    //Remember to destroy / unset the session info you may have stored
+    delete localStorage[sessionName];
+    console.log('empytied');
+  }
+
+  $(document).ready(function(){
+
+    var global_username = '';
+
+  	//Reload page.
+  	//window.location.reload();
+
+    /*** Set up sinchClient ***/
+
+    sinchClient = new SinchClient({
+      applicationKey: 'c0711ac1-ae9e-43a9-bc6b-194f0d63238b',
+      capabilities: {calling: true},
+      startActiveConnection: true, /* NOTE: This is required if application is to receive calls / instant messages. */
+      //Note: For additional loging, please uncomment the three rows below
+      onLogMessage: function(message) {
+        console.log(message);
+      },
+    });
+
+    var sessionName = 'sinchSessionWEB-' + $('.user_email').val() + sinchClient.applicationKey;
+    //var sessionName = 'sinchSessionWEB-c0711ac1-ae9e-43a9-bc6b-194f0d63238b';
+
+
+
+    $( window ).unload(function() {
+      //Stop the sinchClient
+    	sinchClient.terminate();
+      //Remember to destroy / unset the session info you may have stored
+    	delete localStorage[sessionName];
+    });
+
+    if($('.user_email').val() != ''){
+      var signInObj = {};
+      signInObj.username = $('.user_email').val();
+      signInObj.password = 'asdlkd81';//$('login_pw').val();
+
+      //Use Sinch SDK to authenticate a user
+      sinchClient.start(signInObj, function() {
+        global_username = signInObj.username;
+
+        //Store session & manage in some way (optional)
+        localStorage[sessionName] = JSON.stringify(sinchClient.getSession());
+      });
+    }
+
+
+    /*** Check for valid session. NOTE: Deactivated by default to allow multiple browser-tabs with different users. ***/
+
+    var sessionObj = JSON.parse(localStorage[sessionName] || '{}');
+    if(false && sessionObj.userId) {
+      sinchClient.start(sessionObj)
+        .then(function() {
+          global_username = sessionObj.userId;
+          console.log(global_username);
+
+          //Store session & manage in some way (optional)
+          localStorage[sessionName] = JSON.stringify(sinchClient.getSession());
+        });
+    }
+
+    var callListeners = {
+    	onCallProgressing: function(call) {
+        console.log('onCallProgressing');
+        console.log('callProgressing');
+    		$('audio#ringback').prop("currentTime", 0);
+    		$('audio#ringback').trigger("play");
+
+    		//Report call stats
+    		$('div#callLog').append('<div id="stats">Ringing...</div>');
+    	},
+    	onCallEstablished: function(call) {
+    		$('audio#incoming').attr('src', call.incomingStreamURL);
+    		$('audio#ringback').trigger("pause");
+    		$('audio#ringtone').trigger("pause");
+
+    		//Report call stats
+    		var callDetails = call.getDetails();
+    		$('div#callLog').append('<div id="stats">Answered at: '+(callDetails.establishedTime)+'</div>');
+    	},
+    	onCallEnded: function(call) {
+    		$('audio#ringback').trigger("pause");
+    		$('audio#ringtone').trigger("pause");
+    		$('audio#incoming').attr('src', '');
+
+    		$('button').removeClass('incall');
+    		$('button').removeClass('callwaiting');
+
+        $('.incoming_call').modal('hide');
+
+    		//Report call stats
+    		var callDetails = call.getDetails();
+    		$('div#callLog').append('<div id="stats">Ended: '+callDetails.endedTime+'</div>');
+    		$('div#callLog').append('<div id="stats">Duration (s): '+callDetails.duration+'</div>');
+    		$('div#callLog').append('<div id="stats">End cause: '+call.getEndCause()+'</div>');
+    		if(call.error) {
+    			$('div#callLog').append('<div id="stats">Failure message: '+call.error.message+'</div>');
+    		}
+    	}
+    }
+
+    /*** Set up callClient and define how to handle incoming calls ***/
+
+    var callClient = sinchClient.getCallClient();
+    callClient.initStream().then(function() { // Directly init streams, in order to force user to accept use of media sources at a time we choose
+    	$('div.frame').not('#chromeFileWarning').show();
+    });
+    var call;
+
+    callClient.addEventListener({
+      onIncomingCall: function(incomingCall) {
+    	//Play some groovy tunes
+      $('.incoming_call').modal('show');
+    	$('audio#ringtone').prop("currentTime", 0);
+    	$('audio#ringtone').trigger("play");
+
+    	//Print statistics
+    	$('div#callLog').append('<div id="title">Incoming call from ' + incomingCall.fromId + '</div>');
+    	$('div#callLog').append('<div id="stats">Ringing...</div>');
+    	$('button').addClass('incall');
+
+    	//Manage the call object
+        call = incomingCall;
+        call.addEventListener(callListeners);
+    	$('button').addClass('callwaiting');
+      }
+    });
+
+    $('button#answer').click(function(event) {
+    	event.preventDefault();
+
+      /*** Hang up a call ***/
+
+      $('button#hangup').click(function(event) {
+      	event.preventDefault();
+
+      	if($(this).hasClass("incall")) {
+
+      		console.info('Will request hangup..');
+
+      		call && call.hangup();
+
+          $('.incoming_call').modal('hide');
+      	}
+      });
+
+    	if($(this).hasClass("callwaiting")) {
+
+    		try {
+    			call.answer();
+    			$('button').removeClass('callwaiting');
+    		}
+    		catch(error) {
+    			handleError(error);
+    		}
+    	}
+    });
+
+    /*** Make a new data call ***/
+
+    $('button#call').click(function(event) {
+    	event.preventDefault();
+      $('.outgoing_call').modal('show');
+
+    	if(!$(this).hasClass("incall") && !$(this).hasClass("callwaiting")) {
+    		$('button').addClass('incall');
+
+    		$('div#callLog').append('<div id="title">Calling ' + $('input#callUserName').val()+'</div>');
+
+    		console.log('Placing call to: ' + $('input#callUserName').val());
+    		call = callClient.callUser($('input#callUserName').val());
+        console.log($('input#callUserName').val());
+    		call.addEventListener(callListeners);
+    	}
+    });
+
+
+    /*** Log out user ***/
+
+    /*$('button#logOut').on('click', function(event) {
+    	event.preventDefault();
+    	clearError();
+
+    	//Stop the sinchClient
+    	sinchClient.terminate();
+    	//Note: sinchClient object is now considered stale. Instantiate new sinchClient to reauthenticate, or reload the page.
+
+    	//Remember to destroy / unset the session info you may have stored
+    	delete localStorage[sessionName];
+
+    	//Allow re-login
+    	//$('button#loginUser').attr('disabled', false);
+    	//$('button#createUser').attr('disabled', false);
+
+    	//Reload page.
+    	window.location.reload();
+    });*/
+
+
+    /** Chrome check for file - This will warn developers of using file: protocol when testing WebRTC **/
+    if(location.protocol == 'file:' && navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+    	$('div#chromeFileWarning').show();
+    }
+
+    $('button').prop('disabled', false); //Solve Firefox issue, ensure buttons always clickable after load
+  });
+
+  $('.userType').click(function(){
+    if($(this).val() == '1')
+      $('.login-form').attr('action', '/signUp')
+    else
+      $('.login-form').attr('action', '/signUpMentor')
+  });
+
+  $('.signup-form').submit(function(e, attempt = 0){
+    if(attempt = 0){
+      e.preventDefault();
+
+      var signUpObj = {};
+    	signUpObj.username = $('input#email_signup').val();
+    	signUpObj.password = $('.sign_up_pw').val();
+
+    	//Use Sinch SDK to create a new user
+    	sinchClient.newUser(signUpObj, function(ticket) {
+    		//On success, start the client
+    		sinchClient.start(ticket, function() {
+    			global_username = signUpObj.username;
+    			//On success, show the UI
+    			//showUI();
+
+    			//Store session & manage in some way (optional)
+    			localStorage[sessionName] = JSON.stringify(sinchClient.getSession());
+    		});
+    	});
+    }
+
+    $('.signup-form').submit(1);
+
+  });
+
+  $('.existing-user').submit(function(e, attempt = 0){
+    if(attempt = 0){
+      e.preventDefault();
+
+    	var signInObj = {};
+    	signInObj.username = $('.login_email').val();
+    	signInObj.password = $('login_pw').val();
+
+    	//Use Sinch SDK to authenticate a user
+    	sinchClient.start(signInObj, function() {
+    		global_username = signInObj.username;
+
+    		//Store session & manage in some way (optional)
+    		localStorage[sessionName] = JSON.stringify(sinchClient.getSession());
+    	});
+    }
+
+    $('.existing-user').submit(1);
+});
+</script>

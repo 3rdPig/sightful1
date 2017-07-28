@@ -1,0 +1,109 @@
+<div class="invites-main container">
+  <h1 class="invites-title">Meeting Requests</h1>
+
+  <%
+
+    schedule = Array.new
+    invite = Hash.new
+    index = 0
+    counter = 1
+    x = 1
+    status = 0
+    @invites.each do |i|
+
+      if i.status.to_i == 1 || i.status.to_i == 2
+        invite['status'] = i.status
+      end
+
+      if i.status.to_i == 3
+        invite['status'] = i.status
+        invite['date'] = i.dt
+      end
+
+      x = x + 1
+
+      if x > 3
+        invitee = User.find(i.invitee)
+        invite['name'] = invitee.first_name + ' ' + invitee.last_name
+        invite['email'] = invitee.email
+        invite['content'] = i.ref.content
+
+        schedule[index] = invite
+        invite = Hash.new
+        index = index + 1
+        x = 1
+      end
+
+    end
+
+  %>
+  <% schedule.each do |s| %>
+    <div class="row vertical-align schedule-container">
+      <section class="col-xs-6 schedule-ui schedule-content">
+        <img src="images/person-placeholder.jpg" width="40" class="img-responsive inviter-img" alt="img">
+        <ul>
+          <li>You have requested <strong><%= s['name'] %></strong> for a phone conversation</li>
+          <li><%= s['content'] %></li>
+        </ul>
+      </section>
+      <section class="col-xs-6 schedule-ui schedule-times">
+        <% if s['status'].to_i == 1 %>
+        <div class="pending-message-sub"><p>Your request is still pending confirmation from the mentor. Please check back later.</p></div>
+        <% end %>
+        <% if s['status'].to_i == 2 %>
+        <div class="decline-message-sub"><p>The mentor has declined your request for a meeting.</p></div>
+        <% end %>
+        <% if s['status'].to_i == 3 %>
+        <div class="accept-message-sub">
+          <p>The mentor has accepted your request for a meeting at the following time:</p>
+          <p><strong><%= s['date'] %></strong></p>
+          <input id="callUserName" type="hidden" value="<%= s['email'] %>">
+          <p><button id="call" class="btn-sinch">Call</button></p>
+          <p><button id="hangup" class="btn-sinch btn-hang-up hidden">End</button></p>
+        </div>
+        <% end %>
+      </section>
+    </div>
+  <% end %>
+  <!-- Outgoing Call Modal -->
+  <div id="outgoingModal" class="modal fade outgoing_call" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Calling...</h4>
+        </div>
+        <div class="modal-body">
+          <div id="callLog">
+    			</div>
+    			<div class="error">
+    			</div>
+          <div class="cleafix"></div>
+          <form id="newCall">
+  					<button id="hangup" class="btn-sinch">Hangup</button>
+  					<audio id="ringback" src='/audio/ringback.wav' loop></audio>
+  				</form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+$('button#hangup').click(function(event) {
+
+  if($(this).hasClass("incall")) {
+
+    console.info('Will request hangup..');
+
+    call && call.hangup();
+
+    $('.incoming_call').modal('hide');
+  }
+});
+</script>

@@ -1,0 +1,330 @@
+
+<!--<nav class="navbar navbar-default navbar-static-top">-->
+  <!--<div class="container">-->
+    <!--<div class="navbar-header">-->
+      <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">-->
+        <!--<span class="sr-only">Toggle navigation</span>-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+      <!--</button>-->
+      <!--<a class="navbar-brand" href="#"><img src="images/logo.png" class="center-block img-responsive  "></a>-->
+    <!--</div>-->
+    <!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">-->
+      <!--<ul class="nav navbar-nav navbar-right">-->
+        <!--<li><a href="/mentors" class="">Explore</a></li>-->
+        <!--<li><a href="#" class="">Advise</a></li>-->
+        <!--<li class="dropdown rightdrop1"><a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-bell-o" aria-hidden="true"></i></a>-->
+          <!--<ul class="dropdown-menu">-->
+            <!--<li>-->
+              <!--<div class="title65">-->
+                <!--<h3>Notifications <a href="#" class="pull-right">Settings</a></h3>-->
+              <!--</div>-->
+            <!--</li>-->
+            <!--<li>-->
+              <!--<p><strong>John Smith</strong> requested for a phone conversation for Software Engineering.</p>-->
+              <!--<p class="text-right space5"><small>37 min ago</small></p>-->
+            <!--</li>-->
+            <!--<li>-->
+              <!--<p><strong>John Smith</strong> requested for a phone conversation for Software Engineering.</p>-->
+              <!--<p class="text-right space5"><small>37 min ago</small></p>-->
+            <!--</li>-->
+            <!--<li>-->
+              <!--<p><strong>John Smith</strong> requested for a phone conversation for Software Engineering.</p>-->
+              <!--<p class="text-right space5"><small>37 min ago</small></p>-->
+            <!--</li>-->
+            <!--<li>-->
+              <!--<a href="#" class="seeall54">See All</a>-->
+            <!--</li>-->
+
+          <!--</ul>-->
+        <!--</li>-->
+        <!--<li class="dropdown rightdrop2"><a href="#" data-toggle="dropdown" class="dropdown-toggle">-->
+
+          <!--<% if current_user.dp%>-->
+              <!--<img src="<%= current_user.dp %>" width="40" class="img-responsive" alt="img">-->
+          <!--<% else %>-->
+              <!--<img src="images/person-placeholder.jpg" width="40" class="img-responsive" alt="img">-->
+          <!--<% end %>-->
+
+        <!--</a>-->
+          <!--<ul class="dropdown-menu">-->
+            <!--<li><a href="#">Profile</a></li>-->
+            <!--<li><a href="#">Settings</a></li>-->
+            <!--<li><a href="#">Log out</a></li>-->
+          <!--</ul>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</nav>-->
+
+<div style="width: 100%">
+  <h2 class="message"></h2>
+</div>
+
+<section id="edit_profile">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <h2 class="protitle"><a href="#">Edit Profile</a> / <a href="#" class="clr0ab5ed">Connect to Linkedin</a></h2>
+        <div class="linebtm32"></div>
+      </div>
+      <div class="col-md-2 col-sm-3 col-xs-12">
+        <div class="profile_pic1">
+
+          <% if @user.dp%>
+              <img src="<%= @user.dp %>" width="100%" class="img-responsive center-block" alt="img">
+          <% else %>
+              <img src="images/person-placeholder.jpg" width="100%" class="img-responsive center-block" alt="img">
+
+          <% end %>
+          <a href="#" class="editbtn"><img src="images/Pen-Edit-Profile-Pic.png" width="45" alt="img"></a>
+        </div>
+      </div>
+      <div class="col-md-10 col-sm-9 col-xs-12">
+        <%= form_tag '/updateProfile' , class:'form-horizontal mypro_form' , method:'POST' ,id:'example-form' ,remote:true do %>
+            <!-- <form class="form-horizontal mypro_form" id="example-form" name="my-form"> -->
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">First Name</label>
+                <input type="text" class="form_control3" name="fname" id="input1" placeholder="Jun" value="<%= @user.first_name %>">
+              </div>
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Last Name</label>
+                <input type="text" class="form_control3" name="lname" id="input2" placeholder="Li" value="<%= @user.last_name %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-12">
+                <label for="input4" class="control-label">Headline</label>
+                <textarea class="form_control5" rows="3" name ="headline" placeholder="Architectural Designer at Gensler"><%= @user.headline%></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Phone Number</label>
+                <input type="text" class="form_control3" id="phone-number" name="phone" type="text" maxlength="14" placeholder="(_ _ _) _ _ _-_ _ _ _" value="<%= @user.phone%>">
+                <p class="text4">Your phone number will be anonymous to the public.</p>
+              </div>
+              <div class="col-sm-2">
+                <label for="inputEmail3" class="control-label">Zip Code</label>
+                <input type="text" class="form_control3" name="zip" id="input2" placeholder="" value = "<%= @user.zip %>">
+              </div>
+              <div class="col-sm-4">
+                <label for="inputEmail3" class="control-label">Location</label>
+                <input type="text" class="form_control3" name="location" id="input2" placeholder="" value="<%= @user.location %>" >
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Current Position</label>
+                <input type="text" class="form_control3" id="input1" name="current_title" placeholder="" value="<%= @user.current_title %>">
+              </div>
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Current Company</label>
+                <input type="text" class="form_control3" id="input2" placeholder="" name="current_company" value="<%= @user.current_company %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Past Position</label>
+                <input type="text" class="form_control3" id="input1" placeholder="" name="prev_title" value="<%= @user.prev_title %>">
+              </div>
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Past Company</label>
+                <input type="text" class="form_control3" id="input2" name="prev_company" placeholder="" value="<%= @user.prev_company %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Graduate School</label>
+                <input type="text" class="form_control3" id="input1" placeholder="" name="grad_school" value="<%= @user.grad_school%>">
+              </div>
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Major</label>
+                <input type="text" class="form_control3" id="input2" placeholder="" name="grad_major" value="<%= @user.grad_major%>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Undergraduate School</label>
+                <input type="text" class="form_control3" id="input1" placeholder="" name="undergrad_school" value="<%= @user.undergrad_school%>">
+              </div>
+              <div class="col-sm-6">
+                <label for="inputEmail3" class="control-label">Major</label>
+                <input type="text" class="form_control3" id="input2" placeholder="" name="undergrad_major" value="<%= @user.grad_major%>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="buttons_div">
+                <button type="submit" class="updatebtn5">Update</button>
+              </div>
+            </div>
+        <% end %>
+        <!--</form> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="client_review">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <h2 class="protitle">Client Reviews</h2>
+        <div class="linebtm32"></div>
+      </div>
+      <div class="col-md-10 col-md-offset-2 col-sm-9 col-sm-offset-3 col-xs-12">
+        <div class="myallreview43">
+          <div class="overall_review">
+            <p><span>Overall:</span> <i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star-o" aria-hidden="true"></i> 4.6 / 5 </p>
+            <p>27 Reviews</p>
+          </div>
+
+          <div class="myreview">
+            <h3>Client Name &nbsp;<em>May 3rd, 2017</em> <span class="pull-right"><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></span></h3>
+            <div class="linebtm32"></div>
+            <p class="text6">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</p>
+          </div>
+          <div class="myreview">
+            <h3>Client Name &nbsp;<em>May 3rd, 2017</em> <span class="pull-right"><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></span></h3>
+            <div class="linebtm32"></div>
+            <p class="text6">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</p>
+          </div>
+          <div class="myreview">
+            <h3>Client Name &nbsp;<em>May 3rd, 2017</em> <span class="pull-right"><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i><i class="fa fa-star" aria-hidden="true"></i></span></h3>
+            <div class="linebtm32"></div>
+            <p class="text6">"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."</p>
+          </div>
+
+          <nav aria-label="Page navigation" class="mypage3">
+            <ul class="pagination">
+              <li>
+                <a href="#" aria-label="Previous">
+                  <span aria-hidden="true">Prev</span>
+                </a>
+              </li>
+              <li class="active"><a href="#">1</a></li>
+              <li><a href="#">2</a></li>
+              <li><a href="#">...</a></li>
+              <li>
+                <a href="#" aria-label="Next">
+                  <span aria-hidden="true">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+<section id="subscribe">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div>
+          <p class="fsize18">Subscribe to Get Updates and Career Tips!</p>
+          <div class="space20"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-sm-2"></div>
+          <div class="col-md-4 col-sm-8">
+
+            <div class="input-group">
+              <input type="text" class="form-control form_control text-center" placeholder="Enter Your E-mail">
+              <span class="input-group-btn">
+                    <button class="submit_btn" type="button">Submit</button>
+                  </span>
+            </div>
+            <div class="space70 hidden-xs"></div>
+            <div class="space30 visible-xs"></div>
+            <ul class="list-inline">
+              <li><a href="#"><div class="cirlce"><i class="fa fa-facebook social"></i></div></a></li>
+              <li><a href="#"><div class="cirlce"><i class="fa fa-linkedin social"></i></div></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/contact_js.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if($(window).width() < 767) {
+            $(".go_there").prependTo($(".come_here"));
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(".morebtn").click(function(){
+        $(".more_items3").toggle(500);
+    });
+</script>
+<script type="text/javascript">
+    $('#phone-number', '#example-form')
+
+        .keydown(function (e) {
+            var key = e.charCode || e.keyCode || 0;
+            $phone = $(this);
+
+            // Auto-format- do not expose the mask as the user begins to type
+            if (key !== 8 && key !== 9) {
+                if ($phone.val().length === 4) {
+                    $phone.val($phone.val() + ')');
+                }
+                if ($phone.val().length === 5) {
+                    $phone.val($phone.val() + ' ');
+                }
+                if ($phone.val().length === 9) {
+                    $phone.val($phone.val() + '-');
+                }
+            }
+
+            // Allow numeric (and tab, backspace, delete) keys only
+            return (key == 8 ||
+            key == 9 ||
+            key == 46 ||
+            (key >= 48 && key <= 57) ||
+            (key >= 96 && key <= 105));
+        })
+
+        .bind('focus click', function () {
+            $phone = $(this);
+
+            if ($phone.val().length === 0) {
+                $phone.val('(');
+            }
+            else {
+                var val = $phone.val();
+                $phone.val('').val(val); // Ensure cursor remains at the end
+            }
+        })
+
+        .blur(function () {
+            $phone = $(this);
+
+            if ($phone.val() === '(') {
+                $phone.val('');
+            }
+        });
+
+</script>
+<script>
+  $('.updatebtn5').click(function(){
+    alert('Profile Updated');
+  })
+</script>

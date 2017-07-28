@@ -1,0 +1,9 @@
+<h1>UserMailer#signup_confirmation</h1>
+
+<p>
+  <%= "#{@greeting}, #{@user.email}" %>, Thank you for signing up!
+</p>
+
+<p>
+  In order to complete registration, please verify your mail at <%= confirm_email_url(@user.confirm_token) %>
+</p>
